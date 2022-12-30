@@ -10,7 +10,7 @@ hiddenLayers: list of int, where length of list number of layers and each intege
 
 class PureReluNet(nn.Module):
 
-    def __init__(self, inputSize, hiddenLayers, outputSize, outputFn=nn.Softmax) -> None:
+    def __init__(self, inputSize, hiddenLayers, outputSize) -> None:
         super().__init__()
         self.inputSize = inputSize
         
@@ -18,8 +18,6 @@ class PureReluNet(nn.Module):
             print("Failed to build model, Check comments to understand the paramter's type")
             return
         self.hiddenLayers = hiddenLayers
-
-        self.outputFn = outputFn(dim=outputSize)
 
         self.model = self.__make_model__()
     
@@ -35,7 +33,8 @@ class PureReluNet(nn.Module):
             model_dict['relu_'+str(layer)] = nn.ReLU()
             previous_output_size = self.hiddenLayers[layer+1]
         
-        model_dict.pop('relu_'+str(layer))
-        model_dict['output'] = self.outputFn
         
         return nn.Sequential(model_dict)
+    
+    def forward(self,x):
+        return self.model(x)
